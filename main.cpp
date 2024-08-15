@@ -1,13 +1,18 @@
 #include <raylib.h>
+#include <classes.cpp>
 
 int main(){
-    const int screenWidth = 1280;
-    const int screenHeight = 720;
 
-    InitWindow(screenWidth, screenHeight, "Snake");
+    InitWindow(cellSize * cellCount, cellSize * cellCount, "Snake");
+    SetTargetFPS(60);
 
-    while(WindowShouldClose() == false){
+    Food food;
+
+    while (WindowShouldClose() == false){
         BeginDrawing();
+        ClearBackground(lightGreen);
+
+        food.Draw();
 
         EndDrawing();
     }
