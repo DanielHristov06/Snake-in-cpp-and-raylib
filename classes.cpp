@@ -1,10 +1,17 @@
 #include <raylib.h>
+#include <raymath.h>
 #include <globals.h>
 #include <deque>
 
 class Snake {
     public:
         std::deque<Vector2> body = {Vector2{6, 9}, Vector2{5, 9}, Vector2{4, 9}};
+        Vector2 dir = {1, 0};
+
+        void Update(){
+            body.pop_back();
+            body.push_front(Vector2Add(body[0], dir));
+        }
 
         void Draw(){
             for (unsigned int i = 0; i < body.size(); i++){
