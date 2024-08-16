@@ -33,6 +33,7 @@ class Game{
         void CheckFoodCollision(){
             if (Vector2Equals(snake.body[0], food.position)){
                 food.position = food.GenerateRandomPos(snake.body);
+                snake.addSegment = true;
             }
         }
 };

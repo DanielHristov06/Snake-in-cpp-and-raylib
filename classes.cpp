@@ -4,10 +4,16 @@ class Snake {
     public:
         std::deque<Vector2> body = {Vector2{6, 9}, Vector2{5, 9}, Vector2{4, 9}};
         Vector2 dir = {1, 0};
+        bool addSegment = false;
 
         void Update(){
-            body.pop_back();
             body.push_front(Vector2Add(body[0], dir));
+            if (addSegment){
+                addSegment = false;
+            }
+            else{
+                body.pop_back();
+            }
         }
 
         void Draw(){
