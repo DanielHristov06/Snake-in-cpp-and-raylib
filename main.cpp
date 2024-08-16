@@ -1,4 +1,3 @@
-#include <raylib.h>
 #include <classes.cpp>
 
 // Used to update the snake's movement in the set interval
@@ -17,7 +16,7 @@ bool eventTriggered(double interval){
 class Game{
     public:
         Snake snake;
-        Food food;
+        Food food = Food(snake.body);
 
         void Draw(){
             snake.Draw();
@@ -25,7 +24,16 @@ class Game{
         }
 
         void Update(){
-            snake.Update();
+            if (eventTriggered(0.2)){
+                snake.Update();
+            }
+            CheckFoodCollision();
+        }
+
+        void CheckFoodCollision(){
+            if (Vector2Equals(snake.body[0], food.position)){
+                food.position = food.GenerateRandomPos(snake.body);
+            }
         }
 };
 
@@ -39,9 +47,7 @@ int main(){
     while (WindowShouldClose() == false){
         BeginDrawing();
 
-        if (eventTriggered(0.2)){
-            game.Update();
-        }
+        game.Update();
 
         if (IsKeyPressed(KEY_W) && game.snake.dir.y != 1){
             game.snake.dir = {0, -1};

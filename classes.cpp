@@ -1,7 +1,4 @@
-#include <raylib.h>
-#include <raymath.h>
 #include <globals.h>
-#include <deque>
 
 class Snake {
     public:
@@ -22,16 +19,25 @@ class Snake {
         }
 };
 
+bool ElemtnInDeque(Vector2 element, std::deque<Vector2> deque){
+    for (unsigned int i = 0; i < deque.size(); i++){
+        if (Vector2Equals(deque[i], element)){
+            return true;
+        }
+    }
+    return false;
+}
+
 class Food {
     public:
         Vector2 position;
         Texture2D texture;
 
-        Food(){
+        Food(std::deque<Vector2> snakeBody){
             Image image = LoadImage("Graphics/food.png");
             texture = LoadTextureFromImage(image);
             UnloadImage(image);
-            position = GenerateRandomPos();
+            position = GenerateRandomPos(snakeBody);
         }
 
         ~Food(){
@@ -42,9 +48,17 @@ class Food {
             DrawTexture(texture, position.x * cellSize, position.y * cellSize, WHITE);
         }
 
-        Vector2 GenerateRandomPos(){
+        Vector2 GenerateRandomCell(){
             float x = GetRandomValue(0, cellCount - 1);
             float y = GetRandomValue(0, cellCount - 1);
             return Vector2{x, y};
+        }
+
+        Vector2 GenerateRandomPos(std::deque<Vector2> snakeBody){
+            Vector2 position = GenerateRandomCell();
+            while (ElemtnInDeque(position, snakeBody)){
+                position = GenerateRandomCell();
+            }
+            return position;
         }
 };
