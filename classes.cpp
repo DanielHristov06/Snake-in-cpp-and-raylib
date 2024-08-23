@@ -20,7 +20,7 @@ class Snake {
             for (unsigned int i = 0; i < body.size(); i++){
                 float x = body[i].x;
                 float y = body[i].y;
-                DrawRectangleRounded(Rectangle{x * cellSize, y * cellSize, (float)cellSize, (float)cellSize}, 0.5, 6, darkGreen);
+                DrawRectangleRounded(Rectangle{offset + x * cellSize, offset + y * cellSize, (float)cellSize, (float)cellSize}, 0.5, 6, darkGreen);
             }
         }
 
@@ -56,7 +56,7 @@ class Food {
         }
 
         void Draw(){
-            DrawTexture(texture, position.x * cellSize, position.y * cellSize, WHITE);
+            DrawTexture(texture, offset + position.x * cellSize, offset + position.y * cellSize, WHITE);
         }
 
         Vector2 GenerateRandomCell(){

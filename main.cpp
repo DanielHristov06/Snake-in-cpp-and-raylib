@@ -18,6 +18,22 @@ class Game{
         Snake snake;
         Food food = Food(snake.body);
         bool running = true;
+        int score = 0;
+
+        Sound eat;
+        Sound wall;
+
+        Game(){
+            InitAudioDevice();
+            eat = LoadSound("Sounds/Eat.wav");
+            wall = LoadSound("Sounds/Wall.wav");
+        }
+
+        ~Game(){
+            UnloadSound(eat);
+            UnloadSound(wall);
+            CloseAudioDevice();
+        }
 
         void Draw(){
             snake.Draw();
@@ -39,6 +55,8 @@ class Game{
             if (Vector2Equals(snake.body[0], food.position)){
                 food.position = food.GenerateRandomPos(snake.body);
                 snake.addSegment = true;
+                score++;
+                PlaySound(eat);
             }
         }
 
@@ -62,14 +80,16 @@ class Game{
 
         void GameOver(){
             running = false;
+            score = 0;
             snake.Reset();
             food.position = food.GenerateRandomPos(snake.body);
+            PlaySound(wall);
         }
 };
 
 int main(){
 
-    InitWindow(cellSize * cellCount, cellSize * cellCount, "Snake");
+    InitWindow(cellSize * cellCount + offset, cellSize * cellCount + offset, "Snake");
     SetTargetFPS(60);
 
     Game game;
@@ -77,8 +97,10 @@ int main(){
     while (!WindowShouldClose()){
         BeginDrawing();
 
+        // Updating
         game.Update();
 
+        // Checking for key inputs
         if (IsKeyPressed(KEY_W) && game.snake.dir.y != 1){
             game.snake.dir = {0, -1};
         }
@@ -94,7 +116,12 @@ int main(){
 
         if (IsKeyPressed(GetKeyPressed())) game.running = true;
 
+        // Drawing
         ClearBackground(lightGreen);
+
+        DrawRectangleLinesEx(Rectangle{(float)offset, (float)offset, (float)cellSize * cellCount - offset, (float)cellSize * cellCount - offset}, 5, darkGreen);
+        DrawText("Snake", offset, 20, 40, darkGreen);
+        DrawText(TextFormat("%i", game.score), offset, offset + cellCount * cellSize - 50, 40, darkGreen);
 
         game.Draw();
 
