@@ -17,6 +17,7 @@ class Game{
     public:
         Snake snake;
         Food food = Food(snake.body);
+        bool running = true;
 
         void Draw(){
             snake.Draw();
@@ -24,10 +25,14 @@ class Game{
         }
 
         void Update(){
-            if (eventTriggered(0.2)){
-                snake.Update();
+            if (running){
+                if (eventTriggered(0.2)){
+                    snake.Update();
+                }
+                CheckFoodCollision();
+                EdgeCollision();
+                BodyCollision();
             }
-            CheckFoodCollision();
         }
 
         void CheckFoodCollision(){
@@ -35,6 +40,30 @@ class Game{
                 food.position = food.GenerateRandomPos(snake.body);
                 snake.addSegment = true;
             }
+        }
+
+        void EdgeCollision(){
+            if (snake.body[0].x == cellCount || snake.body[0].x == -1){
+                GameOver();
+            }
+            if (snake.body[0].y == cellCount || snake.body[0].y == -1){
+                GameOver();
+            }
+        }
+
+        void BodyCollision(){
+            std::deque<Vector2> headlessBody = snake.body;
+            headlessBody.pop_front();
+
+            if (ElementInDeque(snake.body[0], headlessBody)){
+                GameOver();
+            }
+        }
+
+        void GameOver(){
+            running = false;
+            snake.Reset();
+            food.position = food.GenerateRandomPos(snake.body);
         }
 };
 
@@ -45,7 +74,7 @@ int main(){
 
     Game game;
 
-    while (WindowShouldClose() == false){
+    while (!WindowShouldClose()){
         BeginDrawing();
 
         game.Update();
@@ -62,6 +91,8 @@ int main(){
         if (IsKeyPressed(KEY_D) && game.snake.dir.x != -1){
             game.snake.dir = {1, 0};
         }
+
+        if (IsKeyPressed(GetKeyPressed())) game.running = true;
 
         ClearBackground(lightGreen);
 

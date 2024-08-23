@@ -23,9 +23,14 @@ class Snake {
                 DrawRectangleRounded(Rectangle{x * cellSize, y * cellSize, (float)cellSize, (float)cellSize}, 0.5, 6, darkGreen);
             }
         }
+
+        void Reset(){
+            body = {Vector2{6, 9}, Vector2{5, 9}, Vector2{4, 9}};
+            dir = {1, 0};
+        }
 };
 
-bool ElemtnInDeque(Vector2 element, std::deque<Vector2> deque){
+bool ElementInDeque(Vector2 element, std::deque<Vector2> deque){
     for (unsigned int i = 0; i < deque.size(); i++){
         if (Vector2Equals(deque[i], element)){
             return true;
@@ -62,7 +67,7 @@ class Food {
 
         Vector2 GenerateRandomPos(std::deque<Vector2> snakeBody){
             Vector2 position = GenerateRandomCell();
-            while (ElemtnInDeque(position, snakeBody)){
+            while (ElementInDeque(position, snakeBody)){
                 position = GenerateRandomCell();
             }
             return position;
